@@ -27,7 +27,14 @@ app.get("/api/hello", function (req, res) {
 
 
 app.get("/api/whoami", (req,res)=>{
-  res.json({"ipaddress":req.ip,"language":req.headers['accept-language'],"software":req.headers['user-agent']})
+  //for hosting in Heroku (in my case i use Heroku)
+  if(process.env.HOST == "heroku"){
+    let ipaddressList = req.headers['x-forwarded-for'].split(',')
+    let ipaddress = ipaddressList[ipaddressList-1]
+    res.json({"ipaddress":ipaddress,"language":req.headers['accept-language'],"software":req.headers['user-agent']})
+  }else{
+    res.json({"ipaddress":req.ip,"language":req.headers['accept-language'],"software":req.headers['user-agent']})
+  }
 })
 
 // listen for requests :)
